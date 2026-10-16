@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>QuizForge – Syllabus to Approved Quiz</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<style>
+:root{--bg:#f5f6fb;--card:#fff;--ink:#12141d;--mute:#667086;--line:#e2e5ef;--brand:#5b4bff;--brand2:#9b5cff;--ok:#12a36b;--bad:#e5484d;--warn:#d98a00;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d0f18;--card:#171a27;--ink:#eceef7;--mute:#9399b0;--line:#292d40;--brand:#8b80ff;--brand2:#b98cff}}
+:root[data-theme="dark"]{--bg:#0d0f18;--card:#171a27;--ink:#eceef7;--mute:#9399b0;--line:#292d40;--brand:#8b80ff;--brand2:#b98cff}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:inherit;text-decoration:none}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:4px;align-items:center;padding:10px 18px;background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);overflow-x:auto}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--card);z-index:10}
+.logo{font-weight:800;font-size:18px;margin-right:auto;background:linear-gradient(120deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent;white-space:nowrap}
+nav a,nav button{padding:6px 12px;border-radius:99px;font-size:14px;color:var(--mute);white-space:nowrap}
+nav a.on{background:var(--brand);color:#fff}
+.badge{background:var(--bad);color:#fff;border-radius:99px;font-size:11px;padding:0 6px;margin-left:4px}
+.wrap{max-width:1100px;margin:0 auto;padding:22px 16px 60px}
+.hero{text-align:center;padding:54px 12px 34px;background:radial-gradient(600px 260px at 50% 0,color-mix(in srgb,var(--brand) 20%,transparent),transparent)}
+.hero h1{font-size:clamp(30px,6vw,52px);line-height:1.1;margin:0 0 14px;letter-spacing:-.02em}
+.hero h1 span{background:linear-gradient(120deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--mute);max-width:620px;margin:0 auto 22px;font-size:17px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:18px 0}
+.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card .ic{font-size:26px}.card h3{margin:6px 0 4px;font-size:16px}.card p{margin:0;color:var(--mute);font-size:14px}
+h2.t{font-size:22px;margin:30px 0 4px}.sub{color:var(--mute);margin:0 0 14px}
+button,.btn{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:9px;padding:7px 13px;display:inline-block}
+button:hover{border-color:var(--brand)}button:disabled{opacity:.5;cursor:wait}
+.pri{background:linear-gradient(120deg,var(--brand),var(--brand2));color:#fff;border:0;padding:11px 20px;font-weight:600}
+.ok{background:var(--ok);color:#fff;border:0}.no{color:var(--bad)}
+.two{display:grid;grid-template-columns:360px 1fr;gap:16px}@media(max-width:820px){.two{grid-template-columns:1fr}}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:20px;text-align:center;cursor:pointer;color:var(--mute)}
+.drop:hover,.drop.on{border-color:var(--brand);color:var(--brand)}
+textarea,input,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px}
+label{display:block;font-size:12px;color:var(--mute);margin:10px 0 3px}.row{display:flex;gap:8px}.row>*{flex:1}
+.status{font-size:13px;color:var(--mute);margin-top:8px;min-height:18px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.tab{border-radius:99px;padding:5px 13px;font-size:13px}.tab.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.q{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.q.approved{border-left-color:var(--ok)}.q.rejected{border-left-color:var(--bad);opacity:.6}
+.meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px;font-size:12px}
+.chip{padding:2px 9px;border-radius:99px;border:1px solid var(--line);color:var(--mute);background:var(--bg);font-size:12px}
+.d-easy{color:var(--ok);border-color:var(--ok)}.d-medium{color:var(--warn);border-color:var(--warn)}.d-hard{color:var(--bad);border-color:var(--bad)}.warn{color:var(--warn);border-color:var(--warn)}
+.qt{font-weight:600;margin-bottom:8px}.opt{padding:6px 10px;border:1px solid var(--line);border-radius:8px;margin:4px 0;display:block}
+.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 13%,transparent)}.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 13%,transparent)}
+.exp{color:var(--mute);font-size:13px;margin-top:8px}.acts{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.bar{height:8px;border-radius:9px;background:var(--line);overflow:hidden;margin:3px 0 10px}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2))}
+.stat{font-size:30px;font-weight:800}.empty{text-align:center;color:var(--mute);padding:44px 10px}
+.steps{counter-reset:s}.steps .card::before{counter-increment:s;content:counter(s);display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;font-weight:700;margin-bottom:6px}
+kbd{border:1px solid var(--line);border-radius:5px;padding:0 5px;font-size:12px}
+</style></head><body>
+<nav id="nav"></nav><div id="app" class="wrap"></div>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])),D=['easy','medium','hard'];
+const DEMO=`Data Structures & Algorithms – Unit Outcomes: (1) Explain time and space complexity using Big-O notation. (2) Implement arrays, linked lists, stacks and queues and choose between them. (3) Apply recursion and divide-and-conquer to solve problems such as binary search and merge sort. (4) Describe and traverse trees and binary search trees (inorder, preorder, postorder). (5) Compare hash tables and collision handling (chaining, open addressing). (6) Apply graph traversal (BFS, DFS) and shortest-path ideas to real problems. Topics: asymptotic analysis, amortised cost, stack applications (balanced parentheses), queue variants (circular, priority), sorting (bubble, insertion, merge, quick), searching, BST insert/delete, hashing functions, adjacency list vs matrix.`;
+let S={outcomes:[],qs:[],filter:'pending',src:'',cfg:{n:10,mix:'0.7',diff:'3,4,3',focus:''},pass:60},uid=0,Z={ans:{},done:false},busy=false;
+
+let user=null,sb,st;const save=()=>{clearTimeout(st);st=setTimeout(()=>{if(user)sb.from('workspaces').upsert({user_id:user.id,data:S,updated_at:new Date().toISOString()}).then(r=>{if(r.error)console.error(r.error)})},600)};
+const route=()=>(location.hash||'#home').slice(1);
+const appr=()=>S.qs.filter(q=>q.status==='approved'),cnt=s=>S.qs.filter(q=>q.status===s).length;
+
+/* ---------- views ---------- */
+const V={
+home:()=>`<div class="hero"><span class="chip">🏆 Built for faculty · Problem Statement 3</span><h1 style="margin-top:14px">From syllabus to <span>approved quiz</span> in 60 seconds</h1>
+<p>Upload a syllabus PDF. QuizForge writes outcome-aligned MCQs and short answers, tags difficulty, flags repeats — and nothing goes live until the teacher approves it.</p>
+<a class="btn pri" href="#studio">Open Studio →</a> <button id="demo">⚡ Try with demo syllabus</button></div>
+<div class="grid"><div class="card"><div class="ic">🎯</div><h3>Outcome-aligned</h3><p>Every question maps to a unit outcome, with live coverage tracking.</p></div>
+<div class="card"><div class="ic">🧬</div><h3>No repeats</h3><p>Similarity detection flags duplicate or look-alike questions.</p></div>
+<div class="card"><div class="ic">🎚️</div><h3>Easy · Medium · Hard</h3><p>Set the difficulty blueprint; retag with one click.</p></div>
+<div class="card"><div class="ic">✅</div><h3>Teacher in control</h3><p>Approve, edit, regenerate or reject. Publish only what you trust.</p></div></div>
+<h2 class="t">How it works</h2><p class="sub">Four steps, one workflow.</p>
+<div class="grid steps"><div class="card"><h3>Upload</h3><p>Drop a syllabus PDF or paste unit text.</p></div><div class="card"><h3>Blueprint</h3><p>Choose count, MCQ/short mix and difficulty.</p></div><div class="card"><h3>Review</h3><p>Approve, edit or reject each question. Keyboard shortcuts included.</p></div><div class="card"><h3>Publish</h3><p>Export to Moodle, Google Forms, a printable exam paper or JSON, or hand students the live quiz.</p></div></div>`,
+studio:()=>`<h2 class="t" style="margin-top:6px">Studio</h2><p class="sub">Set up your source and blueprint, then generate.</p><div class="two"><div class="panel">
+<div class="drop" id="drop">📄 Drop syllabus PDF or click<input type="file" id="file" accept="application/pdf" hidden></div>
+<label>…or paste syllabus / unit text</label><textarea id="src" rows="7">${esc(S.src)}</textarea><div class="status" id="srcInfo">${S.src?S.src.length.toLocaleString()+' characters ready':''}</div>
+<button id="demo2" style="margin-top:6px">⚡ Load demo syllabus</button></div>
+<div class="panel"><div class="row"><div><label>Questions (3–30)</label><input id="n" type="number" min="3" max="30" value="${S.cfg.n}"></div>
+<div><label>Mix</label><select id="mix">${[['0.7','70% MCQ'],['0.5','50 / 50'],['1','All MCQ'],['0','All short answer']].map(o=>`<option value="${o[0]}" ${S.cfg.mix==o[0]?'selected':''}>${o[1]}</option>`).join('')}</select></div></div>
+<label>Difficulty blueprint</label><select id="diff">${[['3,4,3','Balanced'],['5,3,2','Easier (revision)'],['2,4,4','Harder (exam)']].map(o=>`<option value="${o[0]}" ${S.cfg.diff==o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>
+<label>Focus (optional)</label><input id="focus" value="${esc(S.cfg.focus)}" placeholder="e.g. Unit 2, recursion">
+<button class="pri" id="gen" style="width:100%;margin-top:16px">✨ Generate questions</button><div class="status" id="genInfo"></div></div></div>`,
+review:()=>{const vis=S.qs.map((q,i)=>[q,i]).filter(([q])=>S.filter==='all'||q.status===S.filter);
+return `<h2 class="t" style="margin-top:6px">Review & approve</h2><p class="sub">Shortcuts on the first pending card: <kbd>A</kbd> approve · <kbd>R</kbd> reject</p>
+<div class="tabs">${['pending','approved','rejected','all'].map(f=>`<button class="tab ${S.filter===f?'on':''}" data-tab="${f}">${f[0].toUpperCase()+f.slice(1)} (${f=='all'?S.qs.length:cnt(f)})</button>`).join('')}
+<span style="margin-left:auto" class="acts"><button data-a="all">✓ Approve all pending</button><button class="ok" data-a="json">⬇ Publish JSON</button><button data-a="txt">⬇ Quiz + key</button></span></div>
+${vis.length?vis.map(([q,i])=>card(q,i)).join(''):`<div class="empty">${S.qs.length?'Nothing in this tab.':'No questions yet. Go to <a href="#studio" style="color:var(--brand)">Studio</a>.'}</div>`}`},
+stats:()=>{const a=appr(),live=S.qs.filter(q=>q.status!=='rejected'),pct=S.qs.length?Math.round(a.length/S.qs.length*100):0;
+const bar=(l,n,t,c)=>`<div>${l} <span style="color:var(--mute)">· ${n}/${t}</span></div><div class="bar"><i style="width:${t?n/t*100:0}%;${c?'background:'+c:''}"></i></div>`;
+const gaps=S.outcomes.map((o,k)=>[o,k]).filter(([o,k])=>!a.some(q=>q.outcome===k));
+return `<h2 class="t" style="margin-top:6px">Analytics</h2><p class="sub">Is your question bank balanced and aligned to the outcomes?</p>
+<div class="grid"><div class="card"><div class="stat">${S.qs.length}</div>generated</div><div class="card"><div class="stat" style="color:var(--ok)">${a.length}</div>approved (${pct}%)</div>
+<div class="card"><div class="stat">${a.filter(q=>q.type=='mcq').length}/${a.filter(q=>q.type!='mcq').length}</div>MCQ / short (approved)</div><div class="card"><div class="stat" style="color:var(--warn)">${S.qs.filter(q=>dupOf(q)&&q.status!=='rejected').length}</div>possible repeats</div></div>
+<div class="two" style="grid-template-columns:1fr 1fr"><div class="panel"><b>Difficulty mix (active)</b><br><br>${D.map((d,i)=>bar(d,live.filter(q=>q.difficulty==d).length,live.length,['var(--ok)','var(--warn)','var(--bad)'][i])).join('')}</div>
+<div class="panel"><b>Outcome coverage (approved / active)</b><br><br>${S.outcomes.length?S.outcomes.map((o,k)=>bar((k+1)+'. '+esc(o),a.filter(q=>q.outcome===k).length,live.filter(q=>q.outcome===k).length)).join(''):'<span class="status">Generate questions first.</span>'}</div></div>
+${gaps.length&&S.qs.length?`<div class="card" style="margin-top:14px;border-color:var(--warn)">⚠ <b>Uncovered outcomes:</b> ${gaps.map(([o,k])=>(k+1)).join(', ')} have no approved question yet.</div>`:''}`},
+quiz:()=>{const a=appr();if(!a.length)return `<div class="empty"><h2>Student quiz</h2>Approve some questions first — only approved questions appear here.<br><br><a class="btn pri" href="#review">Go to Review</a></div>`;
+let sc=0;const body=a.map((q,i)=>{const u=Z.ans[q.id];let h=`<div class="qt">${i+1}. ${esc(q.q)}</div>`;
+if(q.type=='mcq'){if(Z.done&&u===q.answer)sc++;h+=q.options.map((o,k)=>`<label class="opt ${Z.done?(k===q.answer?'right':k===u?'wrong':''):''}" style="margin:4px 0;color:var(--ink);font-size:15px"><input type="radio" style="width:auto" name="z${q.id}" data-z="${q.id}" data-k="${k}" ${u===k?'checked':''} ${Z.done?'disabled':''}> ${'ABCD'[k]}. ${esc(o)}</label>`).join('')}
+else h+=`<textarea rows="2" data-zt="${q.id}" placeholder="Your answer" ${Z.done?'disabled':''}>${esc(u||'')}</textarea>${Z.done?`<div class="opt right">Model answer: ${esc(q.answer)}</div>`:''}`;
+if(Z.done&&q.explanation)h+=`<div class="exp">💡 ${esc(q.explanation)}</div>`;return `<div class="q">${h}</div>`}).join('');
+const m=a.filter(q=>q.type=='mcq').length;
+return `<h2 class="t" style="margin-top:6px">Student quiz <span class="chip">${a.length} approved questions</span></h2><p class="sub">This is exactly what students see — only teacher-approved questions.</p>${body}
+<div class="acts">${Z.done?`<div class="stat">${(m?sc/m*100:0)>=S.pass?'✅ Passed':'❌ Not passed'} · ${sc}/${m} MCQ <span class="chip">pass mark ${S.pass}%</span></div><button data-a="retry">Retry</button>`:`<button class="pri" data-a="submit">Submit quiz</button>`}</div>`}
+};
+V.auth=()=>`<div class='panel' style='max-width:400px;margin:40px auto'><h2 class='t' style='margin-top:0'>Teacher sign in</h2><p class='sub'>Create an account or sign in to open your private workspace.</p><label>Name (sign up only)</label><input id='nm'><label>Email</label><input id='em' type='email' autocomplete='email'><label>Password (min 8 characters)</label><input id='pw' type='password' autocomplete='current-password'><div class='acts' style='margin-top:14px'><button class='pri' id='login'>Sign in</button><button id='signup'>Create account</button></div><div class='status' id='amsg'></div></div>`;
+V.publish=()=>{const a=appr(),mc=a.filter(q=>q.type=='mcq').length,tot=mc+(a.length-mc)*2,X=[['gift','🎓','Moodle (GIFT)','Import in Moodle: Question bank → Import → GIFT format.'],['forms','📋','Google Forms','Open script.google.com, paste the downloaded script and run it to auto-build a quiz form.'],['exam','🖨️','Printable exam paper','Paper with marks, writing lines and a teacher answer key. Open the file, then Print → Save as PDF.'],['json','🧩','JSON (LMS / API)','Structured data for any app or LMS.'],['txt','📄','Plain text + key','Simple quiz sheet and answer key.']];return `<h2 class='t' style='margin-top:6px'>Publish</h2><p class='sub'>${a.length} approved question${a.length==1?'':'s'} ready · only approved questions are ever exported.</p><div class='panel' style='max-width:420px;margin-bottom:14px'><label style='margin-top:0'>Pass mark (%) — used in Student Quiz and exam paper</label><input id='pass' type='number' min='0' max='100' value='${S.pass}'><div class='status'>Exam total ${tot} marks (MCQ 1, short answer 2).</div></div><div class='grid'>${X.map(x=>`<div class='card'><div class='ic'>${x[1]}</div><h3>${x[2]}</h3><p>${x[3]}</p><button class='pri' style='margin-top:10px' data-a='${x[0]}'>⬇ Download</button></div>`).join('')}</div>`};function card(q,i){const dup=dupOf(q),ed=q.edit;
+const meta=`<div class="meta"><span class="chip">#${i+1}</span><span class="chip">${q.type=='mcq'?'MCQ':'Short answer'}</span><button class="chip d-${q.difficulty}" data-a="diff" data-id="${q.id}" title="Change difficulty">${q.difficulty}</button><span class="chip" title="${esc(S.outcomes[q.outcome]||'')}">Outcome ${q.outcome+1}</span>${dup?'<span class="chip warn">⚠ similar to earlier question</span>':''}${q.status!='pending'?`<span class="chip">${q.status}</span>`:''}</div>`;
+let b;if(ed)b=`<textarea data-f="q" data-id="${q.id}" rows="2">${esc(q.q)}</textarea>`+(q.type=='mcq'?q.options.map((o,k)=>`<div class="row" style="margin-top:6px;align-items:center"><input type="radio" style="flex:0 0 20px" name="r${q.id}" data-f="ans" data-k="${k}" data-id="${q.id}" ${q.answer===k?'checked':''}><input data-f="opt" data-k="${k}" data-id="${q.id}" value="${esc(o)}"></div>`).join(''):`<textarea data-f="answer" data-id="${q.id}" rows="2" style="margin-top:6px">${esc(q.answer)}</textarea>`)+`<textarea data-f="explanation" data-id="${q.id}" rows="2" style="margin-top:6px" placeholder="Explanation">${esc(q.explanation)}</textarea>`;
+else b=`<div class="qt">${esc(q.q)}</div>`+(q.type=='mcq'?q.options.map((o,k)=>`<div class="opt ${k===q.answer?'right':''}">${'ABCD'[k]}. ${esc(o)}</div>`).join(''):`<div class="opt right">${esc(q.answer)}</div>`)+(q.explanation?`<div class="exp">💡 ${esc(q.explanation)}</div>`:'');
+return `<div class="q ${q.status}">${meta}${b}<div class="acts"><button class="ok" data-a="approve" data-id="${q.id}">✓ Approve</button><button data-a="edit" data-id="${q.id}">${ed?'Done':'✎ Edit'}</button><button data-a="regen" data-id="${q.id}">↻ Regenerate</button><button class="no" data-a="reject" data-id="${q.id}">✕ Reject</button></div></div>`}
+const toks=s=>new Set(s.toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(w=>w.length>3));
+function dupOf(q){const a=toks(q.q);if(a.size<3)return null;for(const o of S.qs){if(o.id>=q.id||o.status==='rejected')continue;const b=toks(o.q);let i=0;a.forEach(w=>b.has(w)&&i++);if(i/(a.size+b.size-i)>.5)return o}return null}
+
+function render(){let r=V[route()]?route():'home';if(!user&&r!='home')r='auth';if(user&&r=='auth')r='studio';
+$('nav').innerHTML=`<a class="logo" href="#home">⚡ QuizForge</a>`+[['home','Home'],['studio','Studio'],['review','Review'],['stats','Analytics'],['quiz','Student Quiz'],['publish','Publish']].map(([k,l])=>`<a href="#${k}" class="${r==k?'on':''}">${l}${k=='review'&&cnt('pending')?`<span class="badge">${cnt('pending')}</span>`:''}</a>`).join('')+`<button id="theme" title="Theme">◐</button>`;
+$('app').innerHTML=V[r]();$('nav').insertAdjacentHTML('beforeend',user?`<span class='chip'>${esc((user.user_metadata&&user.user_metadata.name)||user.email)}</span><button id='out'>Sign out</button>`:`<a href='#auth' class='${r=='auth'?'on':''}'>Sign in</a>`);scrollTo(0,0)}
+function rerender(){const y=scrollY;render();scrollTo(0,y)}
+window.onhashchange=()=>{Z={ans:{},done:false};render()};
+
+/* ---------- AI ---------- */
+function clip(t,max=26000){if(t.length<=max)return t;const k=4,p=Math.floor(max/k),st=(t.length-p)/(k-1);return Array.from({length:k},(_,i)=>t.slice(Math.floor(i*st),Math.floor(i*st)+p)).join('\n…\n')}
+const parse=t=>JSON.parse(t.slice(t.indexOf('{'),t.lastIndexOf('}')+1));
+async function ask(p,on){const{data:{session}}=await sb.auth.getSession();if(!session)throw new Error('Please sign in again.');const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+session.access_token},body:JSON.stringify({prompt:p})});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'AI request failed');return d.text}
+function norm(q,o=0){const t=q.type=='short'?'short':'mcq';return{id:++uid,status:'pending',type:t,q:String(q.q||''),options:t=='mcq'?(q.options||[]).slice(0,4).map(String):[],answer:t=='mcq'?Math.max(0,Math.min(3,+q.answer||0)):String(q.answer||''),explanation:String(q.explanation||''),difficulty:D.includes(q.difficulty)?q.difficulty:'medium',outcome:Number.isInteger(+q.outcome)?+q.outcome:o}}
+async function generate(){
+if(S.src.trim().length<80){$('genInfo').textContent='Add a syllabus first (PDF, text, or demo).';return}
+const c=S.cfg,n=Math.max(3,Math.min(30,+c.n||10)),mcq=Math.round(n*+c.mix),w=c.diff.split(',').map(Number),ws=w.reduce((a,b)=>a+b),dc=w.map(x=>Math.round(n*x/ws)),ex=S.qs.filter(q=>q.status!=='rejected').map(q=>'- '+q.q).slice(-40).join('\n');
+$('gen').disabled=true;$('genInfo').textContent='Reading syllabus & writing questions…';
+const p=`You are an expert assessment designer. From the syllabus below, extract the unit/learning outcomes (max 8, short), then write ${n} quiz questions.
+Rules:
+- Exactly ${mcq} multiple-choice (type "mcq", 4 options, one correct, plausible distractors) and ${n-mcq} short-answer (type "short", answer = model answer in 1-2 sentences).
+- Difficulty: ~${dc[0]} easy (recall), ~${dc[1]} medium (apply), ~${dc[2]} hard (analyse/evaluate). Tag each "easy"|"medium"|"hard".
+- Each question maps to ONE outcome by 0-based index ("outcome"). Spread across ALL outcomes.
+- No two questions test the same fact or share similar wording. Use only syllabus-supported content.
+${c.focus?'- Focus on: '+c.focus+'\n':''}${ex?'- Do NOT repeat:\n'+ex+'\n':''}Return ONLY JSON: {"outcomes":["..."],"questions":[{"type":"mcq","q":"","options":["","","",""],"answer":0,"explanation":"","difficulty":"easy","outcome":0}]}
+Short questions: "answer":"text", no options.
+
+SYLLABUS:
+${clip(S.src)}`;
+try{const d=parse(await ask(p,({text})=>$('genInfo').textContent='Writing… '+text.length+' chars'));let off=0;
+if(d.outcomes&&d.outcomes.length){if(S.qs.length)off=S.outcomes.length,S.outcomes=S.outcomes.concat(d.outcomes.map(String));else S.outcomes=d.outcomes.map(String)}
+const sh=S.qs.length?off:0;S.qs.push(...(d.questions||[]).filter(q=>q.q).map(q=>norm({...q,outcome:(+q.outcome||0)+sh})));
+S.filter='pending';save();location.hash='#review'}catch(e){$('genInfo').textContent='Failed: '+(e.message||e.code||'try again');$('gen').disabled=false}}
+
+/* ---------- PDF / export ---------- */
+async function readPdf(f){$('srcInfo').textContent='Reading PDF…';try{const pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise;let t='';for(let i=1;i<=pdf.numPages;i++)t+=(await(await pdf.getPage(i)).getTextContent()).items.map(x=>x.str).join(' ')+'\n';S.src=t.trim();$('src').value=S.src;$('srcInfo').textContent=pdf.numPages+' pages · '+S.src.length.toLocaleString()+' characters ready';save()}catch(e){$('srcInfo').textContent='Could not read PDF (scanned?). Paste text instead.'}}
+async function dl(name,data){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'text/plain'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+
+const N=String.fromCharCode(10),BS=String.fromCharCode(92),gx=s=>String(s).replace(/[~=#{}:]/g,m=>BS+m).split(N).join(' ');function exportFor(a,ap){const e=esc,mc=ap.filter(q=>q.type=='mcq'),sh=ap.filter(q=>q.type!='mcq'),all=[...mc,...sh],tot=mc.length+sh.length*2;if(a=='gift')return['quizforge.gift.txt',all.map((q,i)=>'// '+q.difficulty+' | outcome '+(q.outcome+1)+N+'::Q'+(i+1)+':: '+gx(q.q)+' {'+N+(q.type=='mcq'?q.options.map((o,k)=>(k===q.answer?'=':'~')+gx(o)).join(N):'='+gx(q.answer))+N+'}').join(N+N)];if(a=='forms')return['create-google-form.gs','// QuizForge to Google Forms: paste into script.google.com, run createQuiz, authorise, then open the URL shown in the log.'+N+`function createQuiz(){var f=FormApp.create('QuizForge Quiz');f.setIsQuiz(true);var Q=${JSON.stringify(all.map(q=>({t:q.type,q:q.q,o:q.options,a:q.answer})))};Q.forEach(function(x){if(x.t=='mcq'){var i=f.addMultipleChoiceItem();i.setTitle(x.q).setPoints(1).setChoices(x.o.map(function(c,k){return i.createChoice(c,k==x.a)}))}else{f.addParagraphTextItem().setTitle(x.q)}});Logger.log(f.getEditUrl())}`];const sty=`body{font:14px/1.6 Georgia,serif;max-width:760px;margin:30px auto;padding:0 20px}h1{text-align:center;margin:0}.h{display:flex;justify-content:space-between;border-bottom:2px solid #000;padding:8px 0;margin-bottom:14px}li{margin:10px 0}.o{margin-left:18px}.ln{border-bottom:1px solid #999;height:24px}@media print{.pb{page-break-before:always}}`;return['exam-paper.html',`<!DOCTYPE html><html><head><meta charset='utf-8'><title>Exam Paper</title><style>${sty}</style></head><body><h1>Examination Paper</h1><div class='h'><span>Name: ____________</span><span>Date: ________</span><span>Total ${tot} marks · Pass ${Math.ceil(tot*S.pass/100)} (${S.pass}%)</span></div>`+(mc.length?`<h3>Section A – Multiple choice (1 mark each)</h3><ol>`+mc.map(q=>`<li>${e(q.q)}`+q.options.map((o,k)=>`<div class='o'>${'ABCD'[k]}. ${e(o)}</div>`).join('')+'</li>').join('')+'</ol>':'')+(sh.length?`<h3>Section B – Short answer (2 marks each)</h3><ol start='${mc.length+1}'>`+sh.map(q=>`<li>${e(q.q)}<div class='ln'></div><div class='ln'></div></li>`).join('')+'</ol>':'')+`<div class='pb'><h2>Answer key (teacher copy)</h2><ol>`+all.map(q=>'<li>'+(q.type=='mcq'?'ABCD'[q.answer]+'. '+e(q.options[q.answer]):e(q.answer))+'</li>').join('')+'</ol></div></body></html>']}/* ---------- events ---------- */
+document.addEventListener('click',async e=>{const t=e.target.closest('button,[data-a],[data-tab],.drop');if(!t)return;
+if(t.id=='theme'){const r=document.documentElement,dk=r.dataset.theme?r.dataset.theme=='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=dk?'light':'dark';return}
+if(t.id=='demo'||t.id=='demo2'){S.src=DEMO;save();if(route()=='studio'){$('src').value=DEMO;$('srcInfo').textContent=DEMO.length+' characters ready (demo)'}else location.hash='#studio';return}
+if(t.id=='gen')return generate();if(t.classList.contains('drop'))return $('file').click();
+if(t.dataset.tab){S.filter=t.dataset.tab;return rerender()}
+const a=t.dataset.a;if(!a)return;
+if(a=='submit'){Z.done=true;return rerender()}if(a=='retry'){Z={ans:{},done:false};return rerender()}if(['gift','forms','exam'].includes(a)){const ap=appr();if(!ap.length)return alert('Approve at least one question first.');const r=exportFor(a,ap);return dl(r[0],r[1])}
+if(a=='all'){S.qs.forEach(q=>q.status=='pending'&&(q.status='approved'))}
+else if(a=='json'||a=='txt'){const ap=appr();if(!ap.length)return alert('Approve at least one question first.');
+ if(a=='json')return dl('approved-quiz.json',JSON.stringify({published:new Date().toISOString(),outcomes:S.outcomes,questions:ap.map(({id,status,edit,...r})=>({...r,outcomeText:S.outcomes[r.outcome]}))},null,2));
+ let x='QUIZ\n\n',k='ANSWER KEY\n\n';ap.forEach((q,i)=>{x+=`${i+1}. [${q.difficulty}] ${q.q}\n`+(q.type=='mcq'?q.options.map((o,j)=>`   ${'ABCD'[j]}. ${o}\n`).join(''):'   ______________________\n')+'\n';k+=`${i+1}. ${q.type=='mcq'?'ABCD'[q.answer]+'. '+q.options[q.answer]:q.answer}${q.explanation?' — '+q.explanation:''}\n`});return dl('quiz.txt',x+'\n'+k)}
+else{const q=S.qs.find(x=>x.id==t.dataset.id);if(!q)return;
+ if(a=='approve')q.status='approved';else if(a=='reject')q.status='rejected';else if(a=='edit')q.edit=!q.edit;else if(a=='diff')q.difficulty=D[(D.indexOf(q.difficulty)+1)%3];
+ else if(a=='regen'){t.textContent='…';try{const r=await ask(`Write ONE replacement ${q.type=='mcq'?'multiple-choice (4 options)':'short-answer'} quiz question, difficulty "${q.difficulty}", for outcome: "${S.outcomes[q.outcome]||'general'}". Must differ from: ${S.qs.map(x=>x.q).slice(-25).join(' | ')}.\nSyllabus:\n${clip(S.src,9000)}\nReturn ONLY JSON: {"type":"${q.type}","q":"",${q.type=='mcq'?'"options":["","","",""],"answer":0':'"answer":""'},"explanation":"","difficulty":"${q.difficulty}","outcome":${q.outcome}}`);Object.assign(q,norm({...parse(r),outcome:q.outcome}),{id:q.id,status:'pending'})}catch(x){alert('Regenerate failed')}}}
+save();rerender()});
+document.addEventListener('input',e=>{const t=e.target,d=t.dataset;
+if(t.id=='src'){S.src=t.value;$('srcInfo').textContent=S.src.length+' characters ready';return save()}
+if(['n','mix','diff','focus'].includes(t.id)){S.cfg[t.id]=t.value;return save()}
+if(d.zt){Z.ans[d.zt]=t.value;return}if(t.id=='pass'){S.pass=Math.max(0,Math.min(100,+t.value||0));return save()}
+const q=S.qs.find(x=>x.id==d.id);if(!q||!d.f)return;const f=d.f;if(f=='opt')q.options[+d.k]=t.value;else if(f=='ans')q.answer=+d.k;else q[f]=t.value;save()});
+document.addEventListener('change',e=>{const d=e.target.dataset;if(e.target.id=='file'&&e.target.files[0])readPdf(e.target.files[0]);if(d.z)Z.ans[d.z]=+d.k});
+document.addEventListener('dragover',e=>{if(e.target.closest('.drop'))e.preventDefault()});
+document.addEventListener('drop',e=>{if(e.target.closest('.drop')){e.preventDefault();e.dataTransfer.files[0]&&readPdf(e.dataTransfer.files[0])}});
+document.addEventListener('keydown',e=>{if(route()!='review'||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;const q=S.qs.find(x=>x.status=='pending');if(!q)return;
+if(e.key=='a'||e.key=='A')q.status='approved';else if(e.key=='r'||e.key=='R')q.status='rejected';else return;save();rerender()});
+document.addEventListener('click',async e=>{const id=e.target.id;if(id=='out'){await sb.auth.signOut();location.hash='#home';return}
+if(id!='login'&&id!='signup')return;const em=$('em').value.trim(),pw=$('pw').value,m=$('amsg');if(!em||pw.length<8){m.textContent='Enter an email and a password of at least 8 characters.';return}m.textContent='Please wait...';
+const r=id=='login'?await sb.auth.signInWithPassword({email:em,password:pw}):await sb.auth.signUp({email:em,password:pw,options:{data:{name:$('nm').value.trim()}}});
+if(r.error)m.textContent=r.error.message;else if(id=='signup'&&!r.data.session)m.textContent='Check your email to confirm your account, then sign in.';else location.hash='#studio'});
+document.addEventListener('keydown',e=>{if(e.key=='Enter'&&e.target.id=='pw')$('login').click()});
+const blank=()=>({outcomes:[],qs:[],filter:'pending',src:'',cfg:{n:10,mix:'0.7',diff:'3,4,3',focus:''},pass:60});
+async function boot(sess){user=sess?sess.user:null;S=blank();if(user){const{data}=await sb.from('workspaces').select('data').eq('user_id',user.id).maybeSingle();if(data&&data.data&&data.data.qs){S=Object.assign(S,data.data);uid=S.qs.length+100}}render()}
+if(!window.CFG||CFG.SUPABASE_URL.includes('YOUR-PROJECT')){document.getElementById('app').innerHTML="<div class='empty'><h2>Setup needed</h2>Add your Supabase URL and anon key to <code>config.js</code> (see README).</div>"}
+else{sb=supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_ANON_KEY);let last;sb.auth.onAuthStateChange((ev,sess)=>{const id=sess&&sess.user.id;if(ev=='INITIAL_SESSION'||id!==last){last=id;setTimeout(()=>boot(sess),0)}})}
+</script></body></html>
